@@ -1,7 +1,6 @@
 namespace FormulaAirLine.API;
 
 using System.Text;
-using RabbitMQ.Client.Exceptions;
 using System.Text.Json;
 using FormulaAirLine.API.Services;
 using RabbitMQ.Client;
