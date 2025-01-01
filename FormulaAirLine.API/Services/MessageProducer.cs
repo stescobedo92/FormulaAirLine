@@ -1,10 +1,10 @@
+namespace FormulaAirLine.API;
+
 using System.Text;
+using RabbitMQ.Client.Exceptions;
 using System.Text.Json;
 using FormulaAirLine.API.Services;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-
-namespace FormulaAirLine.API;
 
 public class MessageProducer : IMessageProducer
 {
@@ -19,17 +19,19 @@ public class MessageProducer : IMessageProducer
     {
         var factory = new ConnectionFactory()
         {
-            HostName = _configuration["RabbitMQ:HostName"],
-            UserName = _configuration["RabbitMQ:UserName"],
-            Password = _configuration["RabbitMQ:Password"],
-            VirtualHost = _configuration["RabbitMQ:VirtualHost"]
+            HostName = _configuration["RabbitMQ:HostName"] ?? "localhost",
+            UserName = _configuration["RabbitMQ:UserName"] ?? "guest",
+            Password = _configuration["RabbitMQ:Password"] ?? "guest",
+            VirtualHost = _configuration["RabbitMQ:VirtualHost"] ?? "/"
         };
 
-        var connection = factory.CreateConnection();
-        using var channel = connection.CreateModel();
-        channel.QueueDeclare(queue: "bookings", durable: true, exclusive: true);
-        var jsonString = JsonSerializer.Serialize(message);
-        var body = Encoding.UTF8.GetBytes(jsonString);
+        using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+            channel.QueueDeclare(queue: "bookings", durable: true, exclusive: false);
+
+        var body = message is string messageString 
+                ? Encoding.UTF8.GetBytes(messageString) 
+                : Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
         channel.BasicPublish(exchange: "", routingKey: "bookings", body: body);
     }
