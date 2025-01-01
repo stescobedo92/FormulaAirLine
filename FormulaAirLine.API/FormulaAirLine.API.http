@@ -1,0 +1,6 @@
+@FormulaAirLine.API_HostAddress = http://localhost:5072
+
+GET {{FormulaAirLine.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
