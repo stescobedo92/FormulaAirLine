@@ -1,37 +1,39 @@
-namespace FormulaAirLine.API;
-
 using System.Text;
 using System.Text.Json;
-using FormulaAirLine.API.Services;
 using RabbitMQ.Client;
 
-public class MessageProducer : IMessageProducer
+namespace FormulaAirLine.API.Services;
+
+public class MessageProducer : IMessageProducer, IDisposable
 {
-    private readonly IConfiguration _configuration;
+    private readonly IConnection _connection;
+    private readonly IModel _channel;
 
     public MessageProducer(IConfiguration configuration)
     {
-        _configuration = configuration;
+        var factory = new ConnectionFactory
+        {
+            HostName = configuration["RabbitMQ:HostName"] ?? "localhost",
+            UserName = configuration["RabbitMQ:UserName"] ?? "guest",
+            Password = configuration["RabbitMQ:Password"] ?? "guest",
+            VirtualHost = configuration["RabbitMQ:VirtualHost"] ?? "/"
+        };
+
+        _connection = factory.CreateConnection();
+        _channel = _connection.CreateModel();
+        _channel.QueueDeclare(queue: "bookings", durable: true, exclusive: false);
     }
 
     public void SendingMessage<T>(T message)
     {
-        var factory = new ConnectionFactory()
-        {
-            HostName = _configuration["RabbitMQ:HostName"] ?? "localhost",
-            UserName = _configuration["RabbitMQ:UserName"] ?? "guest",
-            Password = _configuration["RabbitMQ:Password"] ?? "guest",
-            VirtualHost = _configuration["RabbitMQ:VirtualHost"] ?? "/"
-        };
+        var body = Encoding.UTF8.GetBytes(message is string msg ? msg : JsonSerializer.Serialize(message));
 
-        using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
-            channel.QueueDeclare(queue: "bookings", durable: true, exclusive: false);
+        _channel.BasicPublish(exchange: "", routingKey: "bookings", body: body);
+    }
 
-        var body = message is string messageString 
-                ? Encoding.UTF8.GetBytes(messageString) 
-                : Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
-
-        channel.BasicPublish(exchange: "", routingKey: "bookings", body: body);
+    public void Dispose()
+    {
+        _channel?.Dispose();
+        _connection?.Dispose();
     }
 }
