@@ -1,49 +1,26 @@
-using FormulaAirLine.API;
+using FormulaAirLine.API.Endpoints;
 using FormulaAirLine.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
+// Registrar servicios necesarios
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddControllers();
-builder.Services.AddScoped<IMessageProducer, MessageProducer>();
+builder.Services.AddLogging();
+builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configurar Swagger en entorno de desarrollo
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// Habilitar HTTPS redirection
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+// Mapear los endpoints de Booking
+app.MapBookingEndpoints();
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
