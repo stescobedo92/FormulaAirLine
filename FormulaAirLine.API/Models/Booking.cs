@@ -4,8 +4,8 @@ namespace FormulaAirLine.API.Models
     {
         public int Id { get; set; }
         public string PassengerName { get; set; } = string.Empty;
-        public string PassengerEmail { get; set; } = string.Empty;
-        public string PassengerPhone { get; set; } = string.Empty;
+        public string? PassengerEmail { get; set; }
+        public string? PassengerPhone { get; set; }
         public string? PassengerAddress { get; set; }
         public string? FlightNumber { get; set; }
         public string? SeatNumber { get; set; }

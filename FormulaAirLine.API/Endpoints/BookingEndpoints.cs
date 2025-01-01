@@ -1,35 +1,32 @@
 using FormulaAirLine.API.Models;
 using FormulaAirLine.API.Services;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-namespace FormulaAirLine.API.Controllers;
+namespace FormulaAirLine.API.Endpoints;
 
-[ApiController]
-[Route("[controller]")]
-public class BookingEndpoints : ControllerBase
+public static class BookingEndpoints
 {
-    private readonly ILogger<BookingEndpoints> _logger;
-    private readonly IMessageProducer _messageProducer;
-
-    //In-Memory db
+    // In-Memory db
     private static readonly List<Booking> _bookings = new();
 
-    public BookingEndpoints(ILogger<BookingEndpoints> logger, IMessageProducer messageProducer)
+    public static void MapBookingEndpoints(this WebApplication app)
     {
-        _logger = logger;
-        _messageProducer = messageProducer;
-    }
+        app.MapPost("/bookings", (Booking booking, IMessageProducer messageProducer, ILogger<Program> logger) =>
+        {
+            if (booking == null)
+            {
+                return Results.BadRequest("Invalid booking data.");
+            }
 
-    [HttpPost]
-    public IActionResult CreatingBooking([FromBody] Booking booking)
-    {
-        if (!ModelState.IsValid)
-            return BadRequest();
+            _bookings.Add(booking);
+            messageProducer.SendingMessage(booking);
+            logger.LogInformation("Booking created successfully.");
 
-        _bookings.Add(booking);
-
-        _messageProducer.SendingMessage(booking);
-
-        return Ok();
+            return Results.Ok();
+        })
+        .WithName("CreateBooking")
+        .WithOpenApi();
     }
 }
