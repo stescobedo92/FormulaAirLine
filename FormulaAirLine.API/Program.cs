@@ -1,26 +1,27 @@
 using FormulaAirLine.API.Endpoints;
+using FormulaAirLine.API.Models;
 using FormulaAirLine.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registrar servicios necesarios
+// Add services to the container.
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 builder.Services.AddLogging();
+
 builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
 
 var app = builder.Build();
 
-// Configurar Swagger en entorno de desarrollo
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Habilitar HTTPS redirection
 app.UseHttpsRedirection();
-
-// Mapear los endpoints de Booking
 app.MapBookingEndpoints();
 
 app.Run();
