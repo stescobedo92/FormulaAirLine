@@ -14,6 +14,7 @@ public class MessageProducer : IMessageProducer, IDisposable
         var factory = new ConnectionFactory
         {
             HostName = configuration["RabbitMQ:HostName"] ?? "localhost",
+            Port = int.Parse(configuration["RabbitMQ:Port"] ?? "5672"),
             UserName = configuration["RabbitMQ:UserName"] ?? "guest",
             Password = configuration["RabbitMQ:Password"] ?? "guest",
             VirtualHost = configuration["RabbitMQ:VirtualHost"] ?? "/"
