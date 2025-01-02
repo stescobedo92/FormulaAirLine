@@ -1,4 +1,4 @@
-name: .NET CI with RabbitMQ
+name: .NET CI
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
         ports:
           - 5672:5672
           - 15672:15672
-        options: >
+        options: |
           --health-cmd "rabbitmqctl status"
           --health-interval 10s
           --health-timeout 5s
@@ -42,9 +42,6 @@ jobs:
       - name: Run tests
         run: dotnet test --no-restore --verbosity normal
 
-      - name: Publish
-        run: dotnet publish -c Release -o ./publish
-
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -61,10 +58,18 @@ jobs:
           name: published-app
           path: ./publish
 
+      - name: Publish
+        run: dotnet publish -c Release -o ./publish
+
       - name: Deploy application
         run: |
           echo "Deploying application..."
-          # Add deployment scripts here
+          # Example deployment script
+          # Replace the following lines with your actual deployment commands
+          echo "Starting deployment..."
+          # Example: Copy files to a remote server
+          scp -r ./publish user@yourserver.com:/path/to/deploy
+          echo "Deployment completed."
 
       - name: Clean up
         run: echo "Deployment finished."
