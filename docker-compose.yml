@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    container_name: rabbitmq-one
+    image: rabbitmq:3.8-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "8080:15672"  # Puerto HTTP para la interfaz web de administración
+      - "5672:5672"  # Puerto AMQP para las aplicaciones
