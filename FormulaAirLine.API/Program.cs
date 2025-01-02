@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddLogging();
 
-builder.Services.AddSingleton<IMessageProducer, MessageProducer>();
+builder.Services.AddScoped<IMessageProducer, MessageProducer>();
 
 var app = builder.Build();
 
