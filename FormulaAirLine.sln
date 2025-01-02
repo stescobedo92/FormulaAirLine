@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaAirLine.API", "Formu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaAirLine.TicketProcessing", "FormulaAirLine.TicketProcessing\FormulaAirLine.TicketProcessing.csproj", "{9FF7AC04-7280-4198-B31A-C60BA30FC0C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaAirLine.API.Tests", "FormulaAirLine.API.Tests\FormulaAirLine.API.Tests.csproj", "{EF3393A3-A1B6-4A7B-9CBD-F32F5E33A538}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{9FF7AC04-7280-4198-B31A-C60BA30FC0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FF7AC04-7280-4198-B31A-C60BA30FC0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FF7AC04-7280-4198-B31A-C60BA30FC0C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF3393A3-A1B6-4A7B-9CBD-F32F5E33A538}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF3393A3-A1B6-4A7B-9CBD-F32F5E33A538}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF3393A3-A1B6-4A7B-9CBD-F32F5E33A538}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF3393A3-A1B6-4A7B-9CBD-F32F5E33A538}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
