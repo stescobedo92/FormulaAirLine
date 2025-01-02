@@ -15,10 +15,8 @@ public static class BookingEndpoints
     {
         app.MapPost("/bookings", (Booking booking, IMessageProducer messageProducer, ILogger<Program> logger) =>
         {
-            if (booking == null)
-            {
+            if (booking is null)
                 return Results.BadRequest("Invalid booking data.");
-            }
 
             _bookings.Add(booking);
             messageProducer.SendingMessage(booking);
